@@ -7,7 +7,7 @@ before_install:
   - docker build -t asm06-poc/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true asm06-poc/react-test npm run test
+  - docker run -e CI=true asm06-poc/react-test npm test
 
 after_success:
   - docker build -t asm06-poc/multi-client ./client
