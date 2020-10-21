@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t asm06-poc/react-test -f .client/Dockerfile.dev .
+  - docker build -t asm06-poc/react-test -f ./client/Dockerfile.dev .
 
 script:
   - docker run -e CI=true asm06-poc/react-test npm run test
@@ -16,3 +16,8 @@ after_success:
   - docker build -t asm06-poc/multi-worker ./worker
   
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push asm06-poc/multi-client
+  - docker push asm06-poc/multi-nginx
+  - docker push asm06-poc/multi-server
+  - docker push asm06-poc/multi-worker
