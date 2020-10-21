@@ -15,7 +15,7 @@ after_success:
   - docker build -t asm06-poc/multi-server ./server
   - docker build -t asm06-poc/multi-worker ./worker
   
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin docker.io
 
   - docker push asm06-poc/multi-client
   - docker push asm06-poc/multi-nginx
