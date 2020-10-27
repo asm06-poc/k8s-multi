@@ -1,0 +1,29 @@
+sudo: required
+language: generic
+services:
+  - docker
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1 
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_c2296d475fdb_key -iv $encrypted_c2296d475fdb_iv -in turing-runner-293402-f188c537e13f.json.enc -out turing-runner-293402-f188c537e13f.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file turing-runner-293402-f188c537e13f.json
+  - gcloud config set project turing-runner-293402
+  - gcloud config set compute/zone australia-southeast1-a
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin docker.io
+  - docker build -t asm06/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true asm06/react-test npm test
+
+deploy:
+    provider: script
+    script: bash ./deploy.sh
+    on:
+      branch: master
